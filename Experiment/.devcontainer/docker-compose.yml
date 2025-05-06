@@ -5,8 +5,8 @@ services:
     image: postgres:15
     container_name: pg_lightrag
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: sptadmin
+      POSTGRES_PASSWORD: sptadmin
     volumes:
       - pgdata:/var/lib/postgresql/data
     ports:
