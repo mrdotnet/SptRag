@@ -1,0 +1,10 @@
+openai
+langchain
+pgvector
+typer[all]
+psycopg2-binary
+pdfminer.six
+python-docx
+python-pptx
+tika
+tiktoken
