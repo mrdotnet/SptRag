@@ -1,8 +1,0 @@
-typer[all]
-langchain
-openai
-psycopg2-binary
-pgvector
-apache-age
-python-dotenv
-tiktoken

@@ -1,0 +1,24 @@
+@page "/replay-queue"
+@inject AdminService AdminService
+
+<PageTitle>Replay Queue</PageTitle>
+
+<RadzenStack Gap="20px">
+    <RadzenHeading Size="H4">Webhook Replay Queue</RadzenHeading>
+
+    <RadzenDataGrid TItem="ReplayQueueItem" Data="@queue" RowSelect="@OnSelect" AllowFiltering="true" AllowPaging="true" PageSize="10">
+        <Columns>
+            <RadzenDataGridColumn TItem="ReplayQueueItem" Property="EndpointName" Title="Endpoint" />
+            <RadzenDataGridColumn TItem="ReplayQueueItem" Property="RetryCount" Title="Retry Count" />
+            <RadzenDataGridColumn TItem="ReplayQueueItem" Property="EnqueuedAt" Title="Queued At" FormatString="{0:yyyy-MM-dd HH:mm}" />
+            <RadzenDataGridColumn TItem="ReplayQueueItem" Context="item">
+                <Template Context="item">
+                    <RadzenButton Icon="replay" Size="ButtonSize.Small" Click="() => Replay(item)" Text="Replay" />
+                </Template>
+            </RadzenDataGridColumn>
+        </Columns>
+    </RadzenDataGrid>
+
+    <RadzenNotification />
+
+</RadzenStack>

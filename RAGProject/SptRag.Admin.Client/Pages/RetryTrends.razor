@@ -1,0 +1,36 @@
+@page "/retry-trends"
+@inject AdminService AdminService
+
+<PageTitle>Retry Quota Trends</PageTitle>
+
+<RadzenCard Style="margin: 20px;">
+    <RadzenHeading Size="H4">Retry Quota Trends</RadzenHeading>
+
+    <RadzenDropDown Data="@Users"
+                    TextProperty="Text"
+                    ValueProperty="Value"
+                    @bind-Value="SelectedUser"
+                    Placeholder="Select user"
+                    Style="width: 200px; margin-bottom: 10px;" />
+
+    <RadzenDropDown Data="@EndpointCategories"
+                    TextProperty="Text"
+                    ValueProperty="Value"
+                    @bind-Value="SelectedCategory"
+                    Placeholder="Select endpoint category"
+                    Style="width: 250px; margin-left: 20px; margin-bottom: 10px;" />
+
+    @if (TrendData != null)
+    {
+        <RadzenChart Style="height: 350px;">
+            <RadzenLineSeries Data="@ChartData"
+                              CategoryProperty="Date"
+                              ValueProperty="Count"
+                              Title="Retries"
+                              Stroke="#4285F4"
+                              FillOpacity="0.1"
+                              Smooth="true" />
+            <RadzenCategoryAxis Categories="@TrendData.Timestamps" />
+        </RadzenChart>
+    }
+</RadzenCard>

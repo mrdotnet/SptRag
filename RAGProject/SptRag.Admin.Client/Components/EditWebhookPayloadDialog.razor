@@ -1,0 +1,18 @@
+@inject DialogService DialogService
+
+<RadzenTemplateForm Data="@PayloadModel" TItem="WebhookPayloadModel" Submit="Submit">
+    <RadzenCard>
+        <RadzenHeading Size="H5" Text="Edit Webhook Payload" />
+        <RadzenTextArea @bind-Value="PayloadModel.Json" Rows="10" Style="width: 100%;" Name="PayloadJson" />
+        <RadzenButton Text="Save" ButtonType="ButtonType.Submit" Style="margin-top: 10px;" />
+    </RadzenCard>
+</RadzenTemplateForm>
+
+@code {
+    [Parameter] public WebhookPayloadModel PayloadModel { get; set; }
+
+    private async Task Submit()
+    {
+        DialogService.Close(PayloadModel);
+    }
+}

@@ -1,0 +1,48 @@
+@page "/quota-limits"
+@inject AdminService AdminService
+
+<PageTitle>Quota Limits</PageTitle>
+
+<RadzenCard Style="margin: 20px;">
+    <RadzenHeading Size="H5" Text="Retry Quota Limits" />
+    <RadzenDataGrid Data="@Quotas" TItem="RetryQuotaEntry" AllowPaging="true" PageSize="10" AllowFiltering="true">
+        <Columns>
+            <RadzenDataGridColumn TItem="RetryQuotaEntry" Property="User" Title="User" />
+            <RadzenDataGridColumn TItem="RetryQuotaEntry" Property="Role" Title="Role" />
+            <RadzenDataGridColumn TItem="RetryQuotaEntry" Property="EndpointCategory" Title="Category" />
+            <RadzenDataGridColumn TItem="RetryQuotaEntry" Property="Used" Title="Used" />
+            <RadzenDataGridColumn TItem="RetryQuotaEntry" Property="Max" Title="Max" />
+            <RadzenDataGridColumn TItem="RetryQuotaEntry" Context="q" Title="Actions">
+                <Template Context="q">
+                    <RadzenButton Icon="refresh" Size="ButtonSize.Small" Click="@(() => ResetQuota(q))" />
+                    <RadzenButton Icon="edit" Size="ButtonSize.Small" Style="margin-left:5px" Click="@(() => OverrideQuota(q))" />
+                </Template>
+            </RadzenDataGridColumn>
+        </Columns>
+    </RadzenDataGrid>
+</RadzenCard>
+
+@code {
+    List<RetryQuotaEntry> Quotas = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        Quotas = await AdminService.GetAllRetryQuotasAsync();
+    }
+
+    async Task ResetQuota(RetryQuotaEntry entry)
+    {
+        await AdminService.ResetRetryQuotaAsync(entry.User, entry.EndpointCategory);
+        Quotas = await AdminService.GetAllRetryQuotasAsync();
+    }
+
+    async Task OverrideQuota(RetryQuotaEntry entry)
+    {
+        var newLimit = await DialogService.Prompt("New quota max", "Override Quota");
+        if (int.TryParse(newLimit, out int max))
+        {
+            await AdminService.OverrideRetryQuotaAsync(entry.User, entry.EndpointCategory, max);
+            Quotas = await AdminService.GetAllRetryQuotasAsync();
+        }
+    }
+}

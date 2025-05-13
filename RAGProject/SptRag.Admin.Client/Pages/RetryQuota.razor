@@ -1,0 +1,101 @@
+// File: Pages/Admin/RetryQuota.razor
+
+@page "/retry-quotas"
+@inject AdminService AdminService
+@inject IJSRuntime JSRuntime
+
+<h2 class="text-2xl font-bold mb-4">Retry Quota Enforcement</h2>
+
+<select @onchange="OnRoleChanged" class="border rounded px-2 py-1 mb-4">
+    <option value="">All Roles</option>
+    @foreach (var role in AvailableRoles)
+    {
+        <option value="@role">@role</option>
+    }
+</select>
+
+<table class="table-auto w-full border">
+    <thead class="bg-gray-100">
+    <tr>
+        <th class="px-4 py-2">User</th>
+        <th class="px-4 py-2">Endpoint Category</th>
+        <th class="px-4 py-2">Retry Count</th>
+        <th class="px-4 py-2">Last Retry</th>
+        <th class="px-4 py-2">Last Reset</th>
+        <th class="px-4 py-2">Reset TTL (hrs)</th>
+        <th class="px-4 py-2">Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var quota in QuotaStats)
+    {
+        <tr class="border-t">
+            <td class="px-4 py-2">@quota.User</td>
+            <td class="px-4 py-2">@quota.EndpointCategory</td>
+            <td class="px-4 py-2">@quota.RetryCount</td>
+            <td class="px-4 py-2">@quota.LastRetry.ToString("u")</td>
+            <td class="px-4 py-2">@quota.LastReset.ToString("u")</td>
+            <td class="px-4 py-2">@quota.ResetTTLHours</td>
+            <td class="px-4 py-2 space-x-2">
+                <button class="bg-green-500 text-white px-2 py-1 rounded" @onclick="() => ExportQuota(quota)">CSV</button>
+                <button class="bg-purple-500 text-white px-2 py-1 rounded" @onclick="() => UpdateTTL(quota)">TTL</button>
+                <button class="bg-indigo-500 text-white px-2 py-1 rounded" @onclick="() => ShowTrend(quota)">Trend</button>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+@if (TrendData != null)
+{
+    <div class="bg-white border p-4 rounded shadow mt-4">
+        <h3 class="text-lg font-semibold mb-2">Retry Trend for @TrendData.User / @TrendData.EndpointCategory</h3>
+        <canvas id="trendChart" width="600" height="300"></canvas>
+    </div>
+}
+
+@code {
+    private List<RetryQuotaEntry> QuotaStats = new();
+    private List<string> AvailableRoles = new();
+    private string SelectedRole = "";
+    private RetryQuotaTrendData? TrendData;
+
+    protected override async Task OnInitializedAsync()
+    {
+        AvailableRoles = await AdminService.GetAllRolesAsync();
+        await LoadQuotas();
+    }
+
+    private async Task OnRoleChanged(ChangeEventArgs e)
+    {
+        SelectedRole = e.Value?.ToString() ?? "";
+        await LoadQuotas();
+    }
+
+    private async Task LoadQuotas()
+    {
+        QuotaStats = await AdminService.GetAllRetryQuotasAsync(SelectedRole);
+    }
+
+    private async Task ExportQuota(RetryQuotaEntry entry)
+    {
+        await AdminService.ExportQuotaToCsvAsync(entry);
+    }
+
+    private async Task UpdateTTL(RetryQuotaEntry entry)
+    {
+        var newTtl = await JSRuntime.InvokeAsync<int>("prompt", $"New TTL (hrs) for {entry.User} - {entry.EndpointCategory}:", entry.ResetTTLHours);
+        if (newTtl > 0)
+        {
+            await AdminService.UpdateQuotaTTLAsync(entry.User, entry.EndpointCategory, newTtl);
+            await LoadQuotas();
+        }
+    }
+
+    private async Task ShowTrend(RetryQuotaEntry entry)
+    {
+        TrendData = await AdminService.GetRetryQuotaTrendAsync(entry.User, entry.EndpointCategory);
+        await JSRuntime.InvokeVoidAsync("renderTrendChart", TrendData);
+    }
+
+}

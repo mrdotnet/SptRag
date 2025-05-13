@@ -1,0 +1,19 @@
+{
+  "mcpServers": {
+    "Paelladoc": {
+      "command": "C:/Users/PhilippeRichard/miniconda3/envs/paelladoc/python.exe",
+      "args": [
+        "-m",
+        "paelladoc.ports.input.mcp_server_adapter",
+        "--stdio"
+      ],
+      "cwd": "C:/SmartPoints/repos/SptRag",
+      "env": {
+        "PAELLADOC_DB_PATH": "C:/SmartPoints/repos/SptRag/paelladoc_memory.db",
+        "PYTHONPATH": "C:/SmartPoints/repos/SptRag"
+      },
+      "disabled": false
+    }
+  },
+  "mcp.timeout": 120000
+}

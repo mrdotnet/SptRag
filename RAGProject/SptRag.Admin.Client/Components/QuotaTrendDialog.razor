@@ -1,0 +1,14 @@
+@inject DialogService DialogService
+
+<RadzenCard>
+    <RadzenHeading Size="H5" Text="Retry Quota Trends" />
+    <RadzenChart Style="height: 300px;">
+        <RadzenLineSeries Data="@TrendData.RetryCounts" CategoryProperty="@((item, index) => TrendData.Timestamps[index])" Title="Retries" />
+        <RadzenCategoryAxis Categories="@TrendData.Timestamps" />
+    </RadzenChart>
+    <RadzenButton Text="Close" Click="@(() => DialogService.Close())" Style="margin-top: 10px;" />
+</RadzenCard>
+
+@code {
+    [Parameter] public RetryQuotaTrendData TrendData { get; set; }
+}

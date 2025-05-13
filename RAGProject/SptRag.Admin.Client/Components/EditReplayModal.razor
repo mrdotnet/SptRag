@@ -1,0 +1,47 @@
+@inject IJSRuntime JS
+@using Microsoft.JSInterop
+@inherits LayoutComponentBase
+
+@if (Visible)
+{
+    <div class="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
+        <div class="bg-white rounded-2xl p-6 shadow-lg w-full max-w-2xl">
+            <h2 class="text-xl font-semibold mb-4">Edit Replay Payload</h2>
+            
+            <div class="mb-4">
+                <label class="block text-sm font-medium mb-1">Payload (JSON):</label>
+                <textarea @bind="EditablePayload" rows="12" class="w-full border rounded p-2 font-mono text-sm"></textarea>
+            </div>
+            
+            <div class="flex justify-end space-x-3">
+                <button class="px-4 py-2 bg-gray-500 text-white rounded" @onclick="Close">Cancel</button>
+                <button class="px-4 py-2 bg-blue-600 text-white rounded" @onclick="Save">Save & Queue</button>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter] public bool Visible { get; set; }
+    [Parameter] public string OriginalPayload { get; set; }
+    [Parameter] public EventCallback<bool> OnClose { get; set; }
+    [Parameter] public EventCallback<string> OnSave { get; set; }
+
+    private string EditablePayload;
+
+    protected override void OnParametersSet()
+    {
+        EditablePayload = OriginalPayload;
+    }
+
+    private async Task Save()
+    {
+        await OnSave.InvokeAsync(EditablePayload);
+        await Close();
+    }
+
+    private async Task Close()
+    {
+        await OnClose.InvokeAsync(false);
+    }
+}

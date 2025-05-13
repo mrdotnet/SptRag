@@ -1,0 +1,20 @@
+@inject DialogService DialogService
+
+<RadzenTemplateForm Data="@QuotaConfig" TItem="QuotaLimitConfig" Submit="SubmitConfig">
+    <RadzenCard>
+        <RadzenHeading Size="H5" Text="Set Retry Quota Limit" />
+        <RadzenTextBox @bind-Value="QuotaConfig.User" Placeholder="User" Name="User" Style="width: 100%;" />
+        <RadzenTextBox @bind-Value="QuotaConfig.Category" Placeholder="Category" Name="Category" Style="width: 100%;" />
+        <RadzenNumeric TValue="int" @bind-Value="QuotaConfig.NewLimit" Name="Limit" Placeholder="New Limit" Style="width: 100%;" />
+        <RadzenButton Text="Apply" ButtonType="ButtonType.Submit" Style="margin-top: 10px;" />
+    </RadzenCard>
+</RadzenTemplateForm>
+
+@code {
+    [Parameter] public QuotaLimitConfig QuotaConfig { get; set; }
+
+    private async Task SubmitConfig()
+    {
+        DialogService.Close(QuotaConfig);
+    }
+}

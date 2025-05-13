@@ -1,0 +1,40 @@
+@page "/dashboard"
+
+<RadzenStack Gap="24px" Style="padding: 24px">
+    <RadzenHeading Size="H3" Style="margin-bottom: 12px;">Admin Dashboard</RadzenHeading>
+
+    <RadzenStack Orientation="Orientation.Horizontal" Gap="24px">
+        <RadzenCard Style="flex: 1;">
+            <RadzenHeading Size="H5" Style="margin-bottom: 8px;">Recent Uploads</RadzenHeading>
+            <RadzenDataGrid TItem="DocumentSummary" Data="@uploads" AllowPaging="true" PageSize="5" ShowPagingSummary="true" AllowSorting="true">
+                <Columns>
+                    <RadzenDataGridColumn TItem="DocumentSummary" Property="FileName" Title="File Name" />
+                    <RadzenDataGridColumn TItem="DocumentSummary" Property="UploadedBy" Title="User" />
+                    <RadzenDataGridColumn TItem="DocumentSummary" Property="UploadedAt" Title="Uploaded At" FormatString="{0:g}" />
+                </Columns>
+            </RadzenDataGrid>
+        </RadzenCard>
+
+        <RadzenCard Style="flex: 1;">
+            <RadzenHeading Size="H5" Style="margin-bottom: 8px;">Webhook Failures</RadzenHeading>
+            <RadzenDataGrid TItem="WebhookFailure" Data="@failures" AllowPaging="true" PageSize="5" AllowSorting="true">
+                <Columns>
+                    <RadzenDataGridColumn TItem="WebhookFailure" Property="EventType" Title="Event Type" />
+                    <RadzenDataGridColumn TItem="WebhookFailure" Property="Status" Title="Status" />
+                    <RadzenDataGridColumn TItem="WebhookFailure" Property="Timestamp" Title="Occurred At" FormatString="{0:g}" />
+                </Columns>
+            </RadzenDataGrid>
+        </RadzenCard>
+    </RadzenStack>
+
+    <RadzenCard>
+        <RadzenHeading Size="H5" Style="margin-bottom: 8px;">Replay Queue</RadzenHeading>
+        <RadzenDataGrid TItem="ReplayQueueItem" Data="@replayQueue" AllowPaging="true" PageSize="5" AllowSorting="true">
+            <Columns>
+                <RadzenDataGridColumn TItem="ReplayQueueItem" Property="EndpointName" Title="Endpoint" />
+                <RadzenDataGridColumn TItem="ReplayQueueItem" Property="RetryCount" Title="Retry Count" />
+                <RadzenDataGridColumn TItem="ReplayQueueItem" Property="EnqueuedAt" Title="Enqueued At" FormatString="{0:g}" />
+            </Columns>
+        </RadzenDataGrid>
+    </RadzenCard>
+</RadzenStack>

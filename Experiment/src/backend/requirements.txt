@@ -1,4 +1,0 @@
-azure-functions
-openai
-psycopg2-binary
-textract

@@ -1,0 +1,21 @@
+@inject DialogService DialogService
+@inherits OwningComponentBase
+
+<RadzenTemplateForm Data="@QuotaEntry" TItem="RetryQuotaEntry" Submit="Save">
+    <RadzenCard>
+        <RadzenHeading Size="H5" Text="Edit Retry Quota" />
+        <RadzenTextBox @bind-Value="QuotaEntry.User" Name="User" Placeholder="User" Style="width: 100%;" Disabled="true" />
+        <RadzenTextBox @bind-Value="QuotaEntry.EndpointCategory" Name="Category" Placeholder="Category" Style="width: 100%;" Disabled="true" />
+        <RadzenNumeric TValue="int" @bind-Value="QuotaEntry.Max" Name="Max" Placeholder="Max Retries" Style="width: 100%;" />
+        <RadzenButton Text="Save" ButtonType="ButtonType.Submit" Style="margin-top: 10px;" />
+    </RadzenCard>
+</RadzenTemplateForm>
+
+@code {
+    [Parameter] public RetryQuotaEntry QuotaEntry { get; set; }
+
+    private async Task Save()
+    {
+        DialogService.Close(QuotaEntry);
+    }
+}

@@ -1,0 +1,28 @@
+@inject EditPayloadService EditService
+@inject DialogService DialogService
+
+<RadzenTemplateForm Data="@PayloadData" Submit="@OnSubmit">
+    <RadzenCard>
+        <RadzenHeading Size="H5" Text="Edit Webhook Payload" />
+        <RadzenTextArea @bind-Value="PayloadData.Json" Rows="10" Style="width: 100%;" />
+        <RadzenTextBox @bind-Value="PayloadData.Annotation" Placeholder="Reason for change" Style="width: 100%;" />
+        <RadzenButton Text="Save" Icon="save" ButtonStyle="ButtonStyle.Primary" Type="Submit" />
+    </RadzenCard>
+</RadzenTemplateForm>
+
+@code {
+    [Parameter] public string PayloadHash { get; set; }
+
+    private PayloadModel PayloadData = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        PayloadData = await EditService.GetPayloadAsync(PayloadHash);
+    }
+
+    private async Task OnSubmit()
+    {
+        await EditService.UpdatePayloadAsync(PayloadHash, PayloadData.Json, PayloadData.Annotation);
+        await DialogService.Close(true);
+    }
+}

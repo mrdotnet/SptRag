@@ -1,0 +1,38 @@
+@page "/uploads"
+@inject HttpClient Http
+@using System.Net.Http.Json
+@using Spt.Rag.Shared.Models
+
+<RadzenCard>
+    <div class="flex justify-between items-center mb-2">
+        <h3 class="text-lg font-semibold">Recent Uploads</h3>
+        <RadzenButton Icon="refresh" ButtonStyle="ButtonStyle.Secondary" Click="LoadData" />
+    </div>
+
+    <RadzenDataGrid Data="@uploads"
+                    TItem="DocumentSummary"
+                    ColumnWidth="200px"
+                    AllowFiltering="true"
+                    AllowPaging="true"
+                    PageSize="10"
+                    AllowSorting="true"
+                    Responsive="true">
+        <Columns>
+            <RadzenDataGridColumn TItem="DocumentSummary" Property="FileName" Title="File Name" />
+            <RadzenDataGridColumn TItem="DocumentSummary" Property="UploadedBy" Title="Uploaded By" />
+            <RadzenDataGridColumn TItem="DocumentSummary" Property="UploadedAt" Title="Timestamp"
+                                  FormatString="{0:yyyy-MM-dd HH:mm:ss}" />
+        </Columns>
+    </RadzenDataGrid>
+</RadzenCard>
+
+@code {
+    private List<DocumentSummary> uploads = new();
+
+    protected override async Task OnInitializedAsync() => await LoadData();
+
+    private async Task LoadData()
+    {
+        uploads = await Http.GetFromJsonAsync<List<DocumentSummary>>("/api/admin/uploads") ?? new();
+    }
+}
